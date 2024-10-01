@@ -1,0 +1,40 @@
+﻿@inherits ComponentBase
+
+<Modal TamanhoModal="max-w-md" AlinhamentoCabecalho="justify-center" DeveExibir="deveExibir" ClassesCorpo="flex justify-center">
+    <Cabecalho>
+        <i class="text-4xl fa-solid fa-triangle-exclamation me-1 text-orange-500"></i>
+    </Cabecalho>
+    <Corpo>
+        <div class="flex flex-col">
+            <small class="text-base font-semibold leading-relaxed text-gray-700 font-semibold">
+                @MensagemAtencao
+            </small>
+        </div>
+    </Corpo>
+    <Rodape>
+        <Botao Classes="ms-3 bg-red-500 hover:bg-red-800 rounded-lg border border-gray-200 text-sm text-white font-medium px-5 py-2.5"
+               @onclick="Oculte">
+            <FragmentoFilho>
+                <small>Fechar</small>
+            </FragmentoFilho>
+        </Botao>
+    </Rodape>
+</Modal>
+
+@code {
+    [Parameter]
+    public string MensagemAtencao { get; set; } = "Atenção";
+
+    private bool deveExibir;
+    public void Mostre()
+    {
+        deveExibir = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Oculte()
+    {
+        deveExibir = false;
+        InvokeAsync(StateHasChanged);
+    }
+}

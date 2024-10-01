@@ -1,0 +1,48 @@
+﻿@inherits ComponentBase
+
+<div id="@(!string.IsNullOrWhiteSpace(Id) ? Id : "")" data-modal-backdrop="static" tabindex="-1" data-test="@(!string.IsNullOrWhiteSpace(Id) ? $"data-test-{Id}" : "")" style="margin-top: 0!important;"
+     class="@(DeveExibir ? "bg-gray-900/50 fixed inset-0" : "pointer-events-none") flex overflow-hidden fixed top-0 right-0 left-0 @Sobreposicao justify-center items-center w-full h-full">
+    <div class="relative p-4 w-full @TamanhoModal max-h-full opacity-0 transition-all ease-in-out duration-300 @(DeveExibir ?  "opacity-100" : "")">
+        <div class="relative bg-white rounded-lg shadow">
+            <!--Cabecalho-->
+            <div class="@ClassesCabecalho @AlinhamentoCabecalho p-4 md:p-5 border-b rounded-t">
+                @Cabecalho
+            </div>
+            <!--Corpo-->
+            <div class="@ClassesCorpo @EspacamentoCorpo">
+                @Corpo
+            </div>
+            <!--Rodape-->
+            <div class="@ClassesRodape items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
+                @Rodape
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    [Parameter]
+    public RenderFragment Cabecalho { get; set; } = null!;
+    [Parameter]
+    public RenderFragment Corpo { get; set; } = null!;
+    [Parameter]
+    public RenderFragment Rodape { get; set; } = null!;
+    [Parameter]
+    public string TamanhoModal { get; set; } = "max-w-2xl";
+    [Parameter]
+    public string Sobreposicao { get; set; } = "z-[150]";
+    [Parameter]
+    public string AlinhamentoCabecalho { get; set; } = "justify-between";
+    [Parameter]
+    public bool DeveExibir { get; set; }
+    [Parameter]
+    public string ClassesCabecalho { get; set; } = "flex items-center";
+    [Parameter]
+    public string ClassesCorpo { get; set; } = string.Empty;
+    [Parameter]
+    public string EspacamentoCorpo { get; set; } = "p-4 md:p-5 space-y-4";
+    [Parameter]
+    public string ClassesRodape { get; set; } = "flex justify-center";
+}

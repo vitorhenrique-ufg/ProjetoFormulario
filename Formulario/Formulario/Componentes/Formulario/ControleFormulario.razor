@@ -1,0 +1,23 @@
+﻿<div class="group flex flex-col gap-1">
+    <div class="flex flex-row items-center overflow-hidden border rounded-md has-[:focus]:ring
+        has-[.invalid]:!border-red-500 has-[.invalid]:text-red-600 has-[.invalid]:ring-red-200 shadow-sm">
+
+        @ElementosFormulario
+
+    </div>
+
+    @if (!string.IsNullOrEmpty(MensagemValidacao))
+    {
+        <span class="text-sm text-red-600 font-bold" data-testid="mensagem-validacao">@MensagemValidacao</span>
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ElementosFormulario { get; set; }
+
+    [Parameter]
+    public string? MensagemValidacao { get; set; }
+}

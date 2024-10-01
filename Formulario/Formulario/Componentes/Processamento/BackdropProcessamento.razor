@@ -1,0 +1,16 @@
+﻿@inherits ComponentBase
+
+<div class="flex justify-center align-items-center @CorFundo fixed inset-0 mt-auto">
+    <div class="flex items-center">
+        <i class="fa-solid fa-spinner fa-spin me-1 @CorIcone @Tamanho"></i>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string CorFundo { get; set; } = string.Empty;
+    [Parameter]
+    public string CorIcone { get; set; } = string.Empty;
+    [Parameter]
+    public string Tamanho { get; set; } = string.Empty;
+}

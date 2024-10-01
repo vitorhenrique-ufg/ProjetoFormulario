@@ -1,0 +1,14 @@
+﻿<button @attributes=Atributos class="@Classes">
+    @FragmentoFilho
+</button>
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Atributos { get; set; }
+
+    [Parameter]
+    public string Classes { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? FragmentoFilho { get; set; }
+}

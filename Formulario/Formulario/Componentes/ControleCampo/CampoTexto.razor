@@ -1,0 +1,65 @@
+﻿@inherits InputText
+<div class="group @ClassesGrupo">
+    <label class="block text-gray-700 text-sm font-bold mb-2 group-has-[.invalid]:text-red-600">
+        @Rotulo
+    </label>
+    <ControleFormulario MensagemValidacao="@mensagemValidacao">
+        <ElementosFormulario>
+            @ElementosAEsquerda
+            <input @attributes="AdditionalAttributes"
+                   type="@TipoInput"
+                   class="@CssClass @Classes"
+                   @bind="@CurrentValue" />
+            @ElementosADireita
+        </ElementosFormulario>
+    </ControleFormulario>
+</div>
+
+@code {
+    [Parameter]
+    public string Classes { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ClassesGrupo { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Rotulo { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? ElementosAEsquerda { get; set; }
+
+    [Parameter]
+    public RenderFragment? ElementosADireita { get; set; }
+
+    [Parameter]
+    public string TipoInput { get; set; } = "text";
+
+    protected override void OnInitialized()
+    {
+        if (EditContext is not null)
+        {
+            EditContext.OnValidationRequested += OnValidationRequested;
+            EditContext.OnFieldChanged += OnFieldChanged;
+        }
+
+        base.OnInitialized();
+    }
+
+    private void OnFieldChanged(object? sender, FieldChangedEventArgs evento)
+    {
+        CaptureMensagemValidacaoPeloContexto();
+    }
+
+    private void OnValidationRequested(object? sender, ValidationRequestedEventArgs e)
+    {
+        CaptureMensagemValidacaoPeloContexto();
+    }
+
+    private string? mensagemValidacao;
+    private void CaptureMensagemValidacaoPeloContexto()
+    {
+        mensagemValidacao = EditContext
+            .GetValidationMessages(FieldIdentifier)
+            .FirstOrDefault();
+    }
+}

@@ -1,0 +1,33 @@
+﻿@inherits ComponentBase
+
+<Modal TamanhoModal="max-w-md" Id="modal-carregamento" DeveExibir=deveExibir Sobreposicao="@Sobreposicao">
+    <Corpo>
+        <div class="flex flex-col">
+            <small class="text-base font-semibold leading-relaxed text-blue-500">
+                <i class="fas fa-circle-notch fa-spin me-1 text-blue-500"></i>
+                @MensagemCarregamento
+            </small>
+        </div>
+    </Corpo>
+</Modal>
+
+@code {
+    [Parameter]
+    public string MensagemCarregamento { get; set; } = "Carregando...";
+
+    [Parameter]
+    public string Sobreposicao { get; set; } = "z-[150]";
+
+    private bool deveExibir;
+    public void Mostre()
+    {
+        deveExibir = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Oculte()
+    {
+        deveExibir = false;
+        InvokeAsync(StateHasChanged);
+    }
+}

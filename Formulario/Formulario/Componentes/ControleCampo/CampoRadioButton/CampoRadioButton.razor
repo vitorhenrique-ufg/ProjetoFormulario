@@ -1,0 +1,40 @@
+﻿@inherits ComponentBase
+@typeparam TValue
+
+<div class="flex @Classes">
+    @if (!string.IsNullOrWhiteSpace(Rotulo))
+    {
+        <label class="form-label text-2xl text-gray-600 font-semibold mb-2">@Rotulo</label>
+    }
+
+    @foreach (ModeloRadioButton<TValue> option in Valores)
+    {
+        <label>
+            <input type="radio"
+                   value="@option.Valor"
+                   @onchange="() => AoAlterar(option.Valor)"
+                   checked="@(Equals(Valor, option.Valor))" />
+            @option.Descricao
+        </label>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? Rotulo { get; set; }
+    [Parameter]
+    public TValue? Valor { get; set; }
+    [Parameter]
+    public EventCallback<TValue> ValorChanged { get; set; }
+    [Parameter]
+    public IEnumerable<ModeloRadioButton<TValue>> Valores { get; set; } = [];
+    [Parameter]
+    public string Classes { get; set; } = string.Empty;
+
+
+    private async Task AoAlterar(TValue valor)
+    {
+        Valor = valor;
+        await ValorChanged.InvokeAsync(Valor);
+    }
+}

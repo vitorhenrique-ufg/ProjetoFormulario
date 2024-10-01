@@ -1,0 +1,48 @@
+﻿@page "/Inicio"
+@layout LayoutMestre
+@using ProjetoFormulario.Pages.Home.Modelo
+@using ProjetoFormulario.Pages.Home.Modelo.Questoes
+
+<PageTitle>Formularios</PageTitle>
+
+@if (estaIniciando)
+{
+    <BackdropProcessamento CorFundo="bg-gray-200 bg-opacity-50" CorIcone="text-green-800" Tamanho="text-5xl" />
+}
+
+@if (!estaIniciando)
+{
+    if (Formularios.Any())
+    {
+        <TituloPersonalizado class="text-2xl text-gray-700 mt-3 mb-3 font-semibold" Texto="Selecione um formulário para preenchimento" />
+        <div class="grid mobile:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 overflow-auto">
+            @foreach (ModeloCardFormulario formulario in Formularios)
+            {
+                <CardFormulario Modelo="formulario">
+                </CardFormulario>
+            }
+        </div>
+    }
+    else
+    {
+        <TituloPersonalizado class="text-2xl text-gray-700 mt-3 font-semibold" Texto="Não há nenhum formulário para ser respondido..." />
+    }
+}
+
+@code
+{
+    private bool estaIniciando;
+    private List<ModeloCardFormulario> Formularios { get; set; } = [];
+    protected override async Task OnInitializedAsync()
+    {
+        //Simulando carregamento
+        estaIniciando = true;
+        await Task.Delay(2000);
+        ModeloCardFormulario formulario1 = new(1, "DIRETORIA EXECUTIVA", "AVALIAÇÃO ENQUANTO COLEGIADO", true);
+        ModeloCardFormulario formulario2 = new(2, "CONTRIBUIÇÃO PARA O RESULTADO DO EXERCÍCIO", "AVALIAÇÃO ENQUANTO COLEGIADO", false);
+        ModeloCardFormulario formulario3 = new(3, "SESSÃO C: AVALIAÇÃO DA DIRETORIA EXECUTIVA ENQUANTO COLEGIADO", "AVALIAÇÃO ENQUANTO COLEGIADO", false);
+
+        Formularios.AddRange([formulario1, formulario2, formulario3]);
+        estaIniciando = false;
+    }
+}

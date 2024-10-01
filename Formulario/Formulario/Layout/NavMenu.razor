@@ -1,0 +1,24 @@
+﻿@inherits ComponentBase
+@using ProjetoFormulario.Gerenciadores.Navegacao
+@inject IGerenciadorNavegacao gerenteNavegacao
+
+<div class="flex flex-row justify-between gap-1 bg-gray-200 p-3">
+    <div class="flex flex-row cursor-default items-center ">
+        <i class="fa-solid fa-user text-gray-500 text-xs hover:text-gray-500 cursor-default"></i>
+        <small class="ms-2 text-xs font-semibold text-gray-500 w-full mobile:truncate mobile:max-w-28">Nome do usuário</small>
+    </div>
+    <Botao Classes="flex items-center me-3" @onclick="AoClicarEmSair">
+        <FragmentoFilho>
+            <i class="fa-solid fa-right-to-bracket text-xs text-gray-500 hover:text-gray-500 cursor-default"></i>
+            <small class="text-xs font-semibold text-gray-500 hover:text-gray-800 text-start ms-2 mb-1">Sair</small>
+        </FragmentoFilho>
+    </Botao>
+</div>
+
+@code {
+    private async Task AoClicarEmSair()
+    {
+        await Task.Yield();
+        gerenteNavegacao.Navegue("/Login");
+    }
+}

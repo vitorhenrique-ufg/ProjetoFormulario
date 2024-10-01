@@ -1,0 +1,184 @@
+﻿@page "/Formulario/{codigo:int}"
+@layout LayoutMestre
+@using ProjetoFormulario.Componentes.GerenciadorTransicao.Transicoes
+@using ProjetoFormulario.Gerenciadores.Navegacao
+@using ProjetoFormulario.Pages.Home.Modelo
+@using ProjetoFormulario.Pages.Home.Modelo.Questoes
+@using ProjetoFormulario.Pages.Home.Modelo.Questoes.Abstracoes
+@inject IGerenciadorNavegacao gerenteNavegacao
+
+<PageTitle>Formularios</PageTitle>
+
+@if (estaIniciando)
+{
+    <BackdropProcessamento CorFundo="bg-gray-200 bg-opacity-50" CorIcone="text-green-800" Tamanho="text-5xl" />
+}
+
+@if (!estaIniciando && FormularioQuestao is not null)
+{
+    <div class="overflow-hidden">
+        <GerenciadorTransicao @ref=GerenciadorTransicao>
+            <ConteudoInterno>
+                <div class="flex flex-row mt-3 mb-2">
+                    <i class="cursor-pointer mt-auto fa-solid fa-arrow-left me-3 mt-auto mb-auto text-2xl text-gray-800 font-semibold" @onclick="AoClicarRetornarHome"></i>
+                    <TituloPersonalizado class="text-2xl text-gray-800 font-semibold" Texto="@FormularioQuestao.Topico" />
+                </div>
+
+                @if (questaoVisivel is ModeloQuestaoMultiplaEscolha questaoMultiplaEscolha)
+                {
+                    <CampoRadioButton Rotulo="@questaoMultiplaEscolha.Descricao"
+                                      @bind-Valor="questaoMultiplaEscolha.OpcaoSelecionada"
+                                      Classes="flex-col gap-2"
+                                      Valores="questaoMultiplaEscolha.Opcoes.Select(opcao => new ModeloRadioButton<int>(opcao.Id, opcao.Descricao))" />
+                }
+
+                @if (questaoVisivel is ModeloQuestaoSubjetiva questaoSubjetiva)
+                {
+                    <CampoAreaTexto Classes="w-full h-[100px] focus:outline-none p-2" @bind-Value=questaoSubjetiva.Texto
+                                    Rotulo="@questaoSubjetiva.Descricao"></CampoAreaTexto>
+                }
+
+                <div class="flex flex-row gap-3 flex-wrap mt-4 mb-3">
+                    @{
+                        bool ehPrimeiraEtapa = indiceQuestaoVisivel == 0;
+                        if (!ehPrimeiraEtapa)
+                        {
+                            <Botao type="button" Classes="bg-green-700 text-white hover:bg-green-800 font-bold py-2 px-4 rounded inline-flex items-center" @onclick="AoClicarRetornar">
+                                <FragmentoFilho>
+                                    <i class="fa-solid fa-arrow-left me-2 mt-0.5 font-bold"></i>
+                                    <span>Retornar</span>
+                                </FragmentoFilho>
+                            </Botao>
+                        }
+                    }
+
+                    @{
+                        bool ehUltimaEtapa = indiceQuestaoVisivel == FormularioQuestao?.Questoes.Count - 1;
+                        if (ehUltimaEtapa)
+                        {
+                            <Botao Classes="bg-green-700 text-white hover:bg-green-800 font-bold py-2 px-4 rounded inline-flex items-center" type="button" @onclick="AoClicarFinalizar">
+                                <FragmentoFilho>
+                                    <span>Finalizar</span>
+                                    <i class="fa-solid fa-check ml-2 font-bold mt-0.5"></i>
+                                </FragmentoFilho>
+                            </Botao>
+                        }
+                        else
+                        {
+                            <Botao Classes="bg-green-700 text-white hover:bg-green-800 font-bold py-2 px-4 rounded inline-flex items-center" type="button" @onclick="AoClicarAvancar">
+                                <FragmentoFilho>
+                                    <span>Avançar</span>
+                                    <i class="fa-solid fa-arrow-right ml-2 font-bold mt-0.5"></i>
+                                </FragmentoFilho>
+                            </Botao>
+                        }
+                    }
+                </div>
+            </ConteudoInterno>
+        </GerenciadorTransicao>
+    </div>
+}
+
+<ModalAtencao @ref="ModalQuestaoNaoRespondida" MensagemAtencao="É necessário responder a questão atual." />
+<ModalCarregamento @ref="ModalCarregamento" MensagemCarregamento="Enviando respostas..."/>
+<ModalSucesso @ref="ModalSucesso" Mensagem="Formulario preenchido com sucesso." 
+    AoClicarFechar="RetornePaginaInicial"
+    TextoBotaoFechar="Voltar"/>
+
+@code
+{
+    [Parameter]
+    public int Codigo { get; set; }
+
+    //Campos
+    private ModeloQuestionario? FormularioQuestao { get; set; }
+    private int indiceQuestaoVisivel = 0;
+    private ModeloQuestaoAbstrata? questaoVisivel;
+    private GerenciadorTransicao? GerenciadorTransicao;
+
+    //Modais
+    private ModalAtencao? ModalQuestaoNaoRespondida;
+    private ModalCarregamento? ModalCarregamento;
+    private ModalSucesso? ModalSucesso;
+
+    private bool estaIniciando;
+    protected override async Task OnInitializedAsync()
+    {
+        //Simulando carregamento
+        estaIniciando = true;
+        await Task.Delay(2000);
+
+        //consultar formulario pelo id
+        //Codigo
+
+        ModeloQuestionario questionario = new(1, "EXPOSIÇÃO DOS ATOS PRATICADOS COM RELAÇÃO À LICITUDE E À EFICÁCIA DA AÇÃO");
+
+        ModeloOpcaoQuestaoMultiplaEscolha opcao1 = new(1, "Mudanças relevantes são necessárias");
+        ModeloOpcaoQuestaoMultiplaEscolha opcao2 = new(2, "Algumas mudanças são necessárias");
+        ModeloOpcaoQuestaoMultiplaEscolha opcao3 = new(3, "Satisfaz as expectativas");
+        ModeloOpcaoQuestaoMultiplaEscolha opcao4 = new(4, "Supera as expectativas");
+        ModeloQuestaoMultiplaEscolha modeloQuestaoMultipla = new(1, "A Diretoria estruturou um sistema de gestão de riscos corporativos adequado às atividades da empresa.", [opcao1, opcao2, opcao3, opcao4]);
+
+        ModeloOpcaoQuestaoMultiplaEscolha opcao5 = new(5, "Mudanças relevantes são necessárias 2 ");
+        ModeloOpcaoQuestaoMultiplaEscolha opcao6 = new(6, "Algumas mudanças são necessárias 2");
+        ModeloOpcaoQuestaoMultiplaEscolha opcao7 = new(7, "Satisfaz as expectativas 2");
+        ModeloOpcaoQuestaoMultiplaEscolha opcao8 = new(8, "Supera as expectativas 2");
+        ModeloQuestaoMultiplaEscolha modeloQuestaoMultipla2 = new(2, "A Diretoria estruturou um sistema de gestão de riscos corporativos adequado às atividades da empresa.", [opcao5, opcao6, opcao7, opcao8]);
+
+        ModeloQuestaoSubjetiva modeloQuestaoSubjetiva = new(3, "Questao subjetiva");
+
+        questionario.AdicioneQuestao(modeloQuestaoMultipla);
+        questionario.AdicioneQuestao(modeloQuestaoMultipla2);
+        questionario.AdicioneQuestao(modeloQuestaoSubjetiva);
+        FormularioQuestao = questionario;
+        questaoVisivel = FormularioQuestao.Questoes.ElementAt(indiceQuestaoVisivel);
+
+        estaIniciando = false;
+    }
+
+    private void AoClicarAvancar()
+    {
+        if (!QuestaoFoiRespondida())
+        {
+            ModalQuestaoNaoRespondida?.Mostre();
+            return;
+        }
+
+        questaoVisivel = FormularioQuestao?.Questoes.ElementAt(++indiceQuestaoVisivel);
+        GerenciadorTransicao?.AdicioneClasseTransicao(ClassesDeTransicoes.Animate.EfeitoSlideParaDireita);
+    }
+
+    private void AoClicarRetornar()
+    {
+        questaoVisivel = FormularioQuestao?.Questoes.ElementAt(--indiceQuestaoVisivel);
+        GerenciadorTransicao?.AdicioneClasseTransicao(ClassesDeTransicoes.Animate.EfeitoSlideParaEsquerda);
+    }
+
+    private bool QuestaoFoiRespondida()
+    {
+        return questaoVisivel is ModeloQuestaoMultiplaEscolha questaoMultiplaEscolha && questaoMultiplaEscolha.OpcaoSelecionada > 0 ||
+               questaoVisivel is ModeloQuestaoSubjetiva questaoSubjetiva && !string.IsNullOrWhiteSpace(questaoSubjetiva.Texto);
+    }
+
+    private async Task AoClicarFinalizar()
+    {
+        //Enviar o objeto FormularioQuestao para salvar
+        //O objeto contém todas as questões com suas respectivas respostas
+        ModalCarregamento?.Mostre();
+        await Task.Delay(2000);
+        ModalCarregamento?.Oculte();
+
+       ModalSucesso?.Mostre();
+    }
+
+    private async Task AoClicarRetornarHome()
+    {
+        await Task.Yield();
+        gerenteNavegacao.Navegue("/Inicio");
+    }
+
+    private void RetornePaginaInicial()
+    {
+        gerenteNavegacao.Navegue("/Inicio");
+    }
+}

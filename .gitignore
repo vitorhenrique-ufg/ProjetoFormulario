@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Formulario/.vs
+/Formulario/Formulario/bin/Debug/net8.0
+/Formulario/Formulario/obj
+*.user

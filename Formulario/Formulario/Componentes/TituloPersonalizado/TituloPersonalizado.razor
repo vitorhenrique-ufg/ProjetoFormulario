@@ -1,0 +1,13 @@
+﻿@inherits ComponentBase
+
+<h1 @attributes=Atributos>
+    @Texto
+</h1>
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Atributos { get; set; }
+
+    [Parameter]
+    public string Texto { get; set; } = string.Empty;
+}

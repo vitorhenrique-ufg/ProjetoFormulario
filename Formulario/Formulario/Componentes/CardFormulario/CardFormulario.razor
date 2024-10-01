@@ -1,0 +1,29 @@
+﻿@using ProjetoFormulario.Pages.Home.Modelo
+@inherits ComponentBase
+
+<div class="max-w-sm p-6 border rounded-lg shadow bg-gray-800 border-gray-700 relative h-[12rem]">
+    <div class="cursor-default">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-white truncate">@Modelo.Titulo</h5>
+    </div>
+    <p class="cursor-default mb-3 font-normal text-gray-700 dark:text-gray-400">@Modelo.Descricao</p>
+
+    @if(Modelo.FoiRespondido)
+    {
+        <div class="truncate inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg absolute bottom-[12px] cursor-default">
+            <small class="text-sm me-2">Respondido</small>
+            <i class="fa-solid fa-check text-base"></i>
+        </div>
+    }
+    else
+    {
+        <a href="@($"Formulario/{Modelo.Id}")" class="truncate inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 absolute bottom-[12px]">
+            <small class="text-sm me-2">Responder</small>
+            <i class="fa-solid fa-pencil"></i>
+        </a>
+    }
+</div>
+
+@code{
+    [Parameter]
+    public ModeloCardFormulario Modelo { get; set; } = null!;
+}

@@ -1,0 +1,50 @@
+﻿@inherits ComponentBase
+
+<Modal TamanhoModal="max-w-md" AlinhamentoCabecalho="justify-center" DeveExibir="deveExibir" ClassesCorpo="flex justify-center">
+    <Cabecalho>
+        <small class="flex justify-center text-4xl font-semibold text-green-500">
+            <i class="fa-solid fa-check"></i>
+        </small>
+    </Cabecalho>
+    <Corpo>
+        <p class="text-gray-500 font-semibold text-base">
+            @Mensagem
+        </p>
+    </Corpo>
+    <Rodape>
+        <Botao Classes="py-2 px-4 w-full text-sm font-medium text-white bg-green-500 hover:bg-green-800 rounded-lg border-gray-500 sm:w-auto" @onclick="Oculte">
+            <FragmentoFilho>
+                <small class="text-sm">@TextoBotaoFechar</small>
+            </FragmentoFilho>
+        </Botao>
+    </Rodape>
+</Modal>
+
+@code {
+    [Parameter]
+    public string Mensagem { get; set; } = "Operação realizada com sucesso.";
+
+    [Parameter]
+    public Action? AoClicarFechar { get; set; }
+
+    [Parameter]
+    public string TextoBotaoFechar { get; set; } = "Fechar";
+
+    private bool deveExibir;
+    public void Mostre()
+    {
+        deveExibir = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public async Task Oculte()
+    {
+        if (AoClicarFechar is not null)
+        {
+            AoClicarFechar.Invoke();
+        }
+
+        deveExibir = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}

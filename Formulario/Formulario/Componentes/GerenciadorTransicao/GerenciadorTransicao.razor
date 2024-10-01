@@ -1,0 +1,25 @@
+﻿@inherits ComponentBase
+
+<div class="container-transicao @classeTransicao">
+    @ConteudoInterno
+</div>
+
+@code{
+    [Parameter]
+    public RenderFragment? ConteudoInterno { get; set; }
+
+    private string classeTransicao = string.Empty;
+    public void AdicioneClasseTransicao(string transicao)
+    {
+        classeTransicao = transicao;
+        _ = RemovaClasseAposTransicao();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task RemovaClasseAposTransicao()
+    {
+        await Task.Delay(1000);
+        classeTransicao = string.Empty;
+        await InvokeAsync(StateHasChanged);
+    }
+}
